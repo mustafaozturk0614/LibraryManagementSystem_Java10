@@ -1,10 +1,12 @@
 package com.bilgeadam.repository;
 
 import com.bilgeadam.repository.entity.UserInformation;
+import com.bilgeadam.repository.entity.Users;
 import com.bilgeadam.utility.HibernateUtility;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +45,11 @@ public class UserInformationRepository implements ICrud<UserInformation> {
 
     @Override
     public List<UserInformation> findAll() {
-        return null;
+        String hql="select ui from UserInformation  ui";
+        session=HibernateUtility.getSESSION_FACTORY().openSession();
+        TypedQuery<UserInformation> typedQuery=session.createQuery(hql, UserInformation.class);
+        List<UserInformation> userInformations=typedQuery.getResultList();
+        return userInformations;
     }
 
     @Override

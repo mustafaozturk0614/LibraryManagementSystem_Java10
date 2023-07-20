@@ -16,7 +16,7 @@ public class Main {
         Address address= Address.builder().city("Ankara").country("Türkiye").build();
         addressRepository.save(address);
         // user informatiın kayıt işlemi
-     UserInformation userInformation   =UserInformation.builder().firstName("Mustafa").lastName("Ozturk").address(address).build();
+     UserInformation userInformation   =UserInformation.builder().firstName("Mustafa").lastName("Ozturk").build();
      userInformationRepository.save(userInformation);
         // user kayıt işlemi
         Users user=Users.builder().password("123").username("musty")

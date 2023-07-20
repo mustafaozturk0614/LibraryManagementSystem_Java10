@@ -25,7 +25,8 @@ public class Book {
     @Builder.Default
     private EStatus status=EStatus.AVAILABLE;
     private int pageCount;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+   @JoinColumn(name = "my_author_id",referencedColumnName = "id",nullable = false)
     private Author author;
 
 }
