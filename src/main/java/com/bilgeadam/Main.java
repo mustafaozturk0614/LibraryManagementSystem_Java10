@@ -2,14 +2,14 @@ package com.bilgeadam;
 
 import com.bilgeadam.repository.AddressRepository;
 import com.bilgeadam.repository.UserInformationRepository;
-import com.bilgeadam.repository.UserRepository;
+import com.bilgeadam.repository.UsersRepository;
 import com.bilgeadam.repository.entity.Address;
 import com.bilgeadam.repository.entity.UserInformation;
 import com.bilgeadam.repository.entity.Users;
 
 public class Main {
     public static void main(String[] args) {
-        UserRepository userRepository=new UserRepository();
+        UsersRepository userRepository=new UsersRepository();
         UserInformationRepository userInformationRepository=new UserInformationRepository();
         /// adress kayıt işlemi
         AddressRepository addressRepository=new AddressRepository();

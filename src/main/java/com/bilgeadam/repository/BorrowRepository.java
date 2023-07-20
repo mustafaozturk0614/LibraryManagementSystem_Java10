@@ -1,6 +1,7 @@
 package com.bilgeadam.repository;
 
-import com.bilgeadam.repository.entity.Users;
+import com.bilgeadam.repository.entity.Author;
+import com.bilgeadam.repository.entity.Borrow;
 import com.bilgeadam.utility.HibernateUtility;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -8,17 +9,16 @@ import org.hibernate.Transaction;
 import java.util.List;
 import java.util.Optional;
 
-public class UserRepository implements ICrud<Users> {
+public class BorrowRepository implements ICrud<Borrow> {
     Session session;
     Transaction transaction;
-
     @Override
-    public Users save(Users users) {
+    public Borrow save(Borrow borrow) {
         try {
             session= HibernateUtility.getSESSION_FACTORY().openSession();
             transaction=session.beginTransaction();
             System.out.println("Oturum acıldı...");
-            session.save(users);
+            session.save(borrow);
             transaction.commit();
             System.out.println("Kayıt başarılı...");
         }catch (Exception e){
@@ -28,11 +28,11 @@ public class UserRepository implements ICrud<Users> {
             System.out.println("Oturum kapandı...");
             session.close();
         }
-        return users;
+        return borrow;
     }
 
     @Override
-    public Users update(Users users) {
+    public Borrow update(Borrow borrow) {
         return null;
     }
 
@@ -42,12 +42,12 @@ public class UserRepository implements ICrud<Users> {
     }
 
     @Override
-    public List<Users> findAll() {
+    public List<Borrow> findAll() {
         return null;
     }
 
     @Override
-    public Optional<Users> findById(Long id) {
+    public Optional<Borrow> findById(Long id) {
         return Optional.empty();
     }
 }
