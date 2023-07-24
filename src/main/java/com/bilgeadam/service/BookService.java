@@ -3,6 +3,7 @@ package com.bilgeadam.service;
 import com.bilgeadam.repository.BookRepository;
 import com.bilgeadam.repository.ICrud;
 import com.bilgeadam.repository.entity.Book;
+import com.bilgeadam.repository.enums.EBookType;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,5 +39,9 @@ public class BookService implements ICrud<Book> {
     @Override
     public Optional<Book> findById(Long id) {
         return bookRepository.findById(id);
+    }
+
+    public List<Book> getBooksByType(EBookType type){
+        return bookRepository.getBooksByType(type);
     }
 }

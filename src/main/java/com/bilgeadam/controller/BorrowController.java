@@ -14,6 +14,7 @@ public class BorrowController {
     }
 
     public Borrow save(Borrow borrow){
+      borrowService.saveReturnDate(borrow);
       return   borrowService.save(borrow);
     }
 

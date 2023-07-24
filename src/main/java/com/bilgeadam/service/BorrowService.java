@@ -38,4 +38,8 @@ public class BorrowService implements ICrud<Borrow> {
     public Optional<Borrow> findById(Long id) {
         return borrowRepository.findById(id);
     }
+
+    public void saveReturnDate(Borrow borrow) {
+        borrow.setReturnDate(borrow.getBorrowDate().plusDays(borrow.getPeriod()));
+    }
 }

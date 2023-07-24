@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -20,14 +21,16 @@ public class Author {
     private String firstName;
     private String lastName;
     // kitapları
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author",fetch = FetchType.EAGER)
             //ara tablo özelliklerini vermek için kullanıyoruz
 //    @JoinTable(name = "yazar_kitap",
 //    joinColumns = @JoinColumn(name = "kitap_id"),
 //            inverseJoinColumns = @JoinColumn(name = "yazar_id")
 //    )
-
     List<Book> books;
+
+
+
 
 
 }

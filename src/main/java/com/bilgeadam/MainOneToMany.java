@@ -5,7 +5,10 @@ import com.bilgeadam.controller.BookController;
 import com.bilgeadam.repository.entity.Author;
 import com.bilgeadam.repository.entity.Book;
 import com.bilgeadam.repository.enums.EBookType;
+import com.bilgeadam.utility.HibernateUtility;
+import org.hibernate.Session;
 
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class MainOneToMany {
@@ -27,6 +30,12 @@ public class MainOneToMany {
         bookController.save(book2);
         bookController.save(book3);
 
-
+        Session session= HibernateUtility.getSESSION_FACTORY().openSession();
+        String hql="select a from Author as a where a.id=1";
+        TypedQuery<Author> typedQuery=session.createQuery(hql, Author.class);
+        Author newAuthor= typedQuery.getSingleResult();
+        session.close();;
+        System.out.println(newAuthor.getFirstName());
+        System.out.println(newAuthor.getBooks());
     }
 }

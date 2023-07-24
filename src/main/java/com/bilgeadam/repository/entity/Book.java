@@ -2,10 +2,7 @@ package com.bilgeadam.repository.entity;
 
 import com.bilgeadam.repository.enums.EBookType;
 import com.bilgeadam.repository.enums.EStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,6 +11,13 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
+@NamedQueries(
+        {
+         @NamedQuery( name="findByBookType" ,query = "select b from Book as b where b.bookType=:myType"),
+         @NamedQuery(name = "findbyId" ,query ="select b from Book as b where b.id=:myId" )
+        }
+)
+
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +31,7 @@ public class Book {
     private int pageCount;
     @ManyToOne(cascade = CascadeType.ALL)
    @JoinColumn(name = "my_author_id",referencedColumnName = "id",nullable = false)
+    @ToString.Exclude
     private Author author;
 
 }
