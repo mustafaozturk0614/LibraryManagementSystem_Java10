@@ -2,10 +2,12 @@ package com.bilgeadam.repository;
 
 import com.bilgeadam.repository.entity.Author;
 import com.bilgeadam.repository.entity.Borrow;
+import com.bilgeadam.repository.entity.Users;
 import com.bilgeadam.utility.HibernateUtility;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,5 +51,26 @@ public class BorrowRepository implements ICrud<Borrow> {
     @Override
     public Optional<Borrow> findById(Long id) {
         return Optional.empty();
+    }
+
+    public List<Borrow> findByUserId(Long userId){
+        String hql="select b from Borrow  b where b.users.id=:x";
+        session =HibernateUtility.getSESSION_FACTORY().openSession();
+        TypedQuery<Borrow> typedQuery=session.createQuery(hql, Borrow.class);
+        typedQuery.setParameter("x",userId);
+        List<Borrow> list=typedQuery.getResultList();
+       session.close();
+        return list;
+    }
+    public List<Users> findByUserWithBookId(Long bookId){
+        String hql="select b.users from Borrow as b where b.book.id=:x";
+        session=HibernateUtility.getSESSION_FACTORY().openSession();
+        TypedQuery<Users> typedQuery= session.createQuery(hql, Users.class);
+
+        typedQuery.setParameter("x",bookId);
+
+        List<Users>list=typedQuery.getResultList();
+        session.close();
+        return list;
     }
 }

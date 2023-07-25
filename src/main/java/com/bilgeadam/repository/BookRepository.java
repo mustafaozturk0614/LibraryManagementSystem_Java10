@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 public class BookRepository implements ICrud<Book> {
@@ -78,14 +79,95 @@ public class BookRepository implements ICrud<Book> {
         session=HibernateUtility.getSESSION_FACTORY().openSession();
         TypedQuery<Book> typedQuery=session.createQuery(hql, Book.class);
         typedQuery.setParameter("x",type);
-        return typedQuery.getResultList();
+        List<Book> list=typedQuery.getResultList();
+        session.close();
+        return list;
     }
     public List<Book> getBooksByType(){
         String hql="select b from Book as b where b.bookType='NOVEL'";
         session=HibernateUtility.getSESSION_FACTORY().openSession();
         TypedQuery<Book> typedQuery=session.createQuery(hql, Book.class);
-        return typedQuery.getResultList();
+        List<Book> list=typedQuery.getResultList();
+        session.close();
+        return list ;
     }
+
+
+    public List<Book> getBooksByTypeNamedQuery(EBookType type){
+        session=HibernateUtility.getSESSION_FACTORY().openSession();
+        TypedQuery<Book> typedQuery=session.createNamedQuery("findByBookType", Book.class);
+        typedQuery.setParameter("myType",type);
+        List<Book> list=typedQuery.getResultList();
+        session.close();
+        return list;
+    }
+    public List<Book> getBooksWithAuthorNameStartWith(String value){
+        String hql="select b from Book as b  where b.author.firstName like '"+value+"%'";
+        session=HibernateUtility.getSESSION_FACTORY().openSession();
+        TypedQuery<Book> typedQuery=session.createQuery(hql, Book.class);
+        List<Book> list=typedQuery.getResultList();
+        session.close();
+        return list;
+    }
+
+    public Optional<Book> findByTitle(String title){
+        String hql="select b from  Book  b where b.title=:x";
+        session=HibernateUtility.getSESSION_FACTORY().openSession();
+        TypedQuery<Book> typedQuery= session.createQuery(hql, Book.class);
+        typedQuery.setParameter("x",title);
+        Book book=null;
+        try {
+            book=typedQuery.getSingleResult();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            session.close();
+        }
+        return Optional.ofNullable(book);
+    }
+
+    /// Listeli çözüm
+    public List<Book> findByTitle2(String title){
+        String hql="select b from  Book  b where b.title=:x";
+        session=HibernateUtility.getSESSION_FACTORY().openSession();
+        TypedQuery<Book> typedQuery= session.createQuery(hql, Book.class);
+        typedQuery.setParameter("x",title);
+     //   typedQuery.setMaxResults(1);
+        List<Book> list=typedQuery.getResultList();
+       session.close();
+        return list;
+    }
+
+    public List<Object[]> getBooksCountByBookType(){
+        String hql="select b.bookType,count(*) from Book b group by  bookType";
+        session=HibernateUtility.getSESSION_FACTORY().openSession();
+        TypedQuery<Object[]> typedQuery= session.createQuery(hql,Object[].class);
+        List<Object[]> list=typedQuery.getResultList();
+        session.close();
+        return list;
+    }
+
+    public List<Object[]> getBooksCountByBookTypeWithNamedQuery(){
+        session=HibernateUtility.getSESSION_FACTORY().openSession();
+        TypedQuery<Object[]> typedQuery= session.createNamedQuery("countBooktype",Object[].class);
+        List<Object[]> list=typedQuery.getResultList();
+        session.close();
+        return list;
+    }
+
+
+    /// Criterie sorguları
+
+    public List<Object[]> getBooksCountByBookTypeWithCriteria(){
+        EntityManager entityManager=HibernateUtility.getSESSION_FACTORY().createEntityManager();
+        CriteriaBuilder criteriaBuilder=entityManager.getCriteriaBuilder();
+        CriteriaQuery<Object[]> criteriaQuery=criteriaBuilder.createQuery(Object[].class);
+        Root<Book> root=criteriaQuery.from(Book.class);
+        //b.bookType,count(*)
+        criteriaQuery.multiselect(root.get("bookType"),criteriaBuilder.count(root)).groupBy(root.get("bookType"));
+        return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+
 
     public List<Book> getBooksByTypeWithCriteria(EBookType type){
         EntityManager entityManager=HibernateUtility.getSESSION_FACTORY().createEntityManager();
@@ -93,18 +175,32 @@ public class BookRepository implements ICrud<Book> {
         CriteriaQuery<Book> criteriaQuery=criteriaBuilder.createQuery(Book.class);
         Root<Book> root=criteriaQuery.from(Book.class);
         criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("bookType"),type));
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        List<Book> list= entityManager.createQuery(criteriaQuery).getResultList();
+        session.close();
+        return list;
     }
-    public List<Book> getBooksByTypeNamedQuery(EBookType type){
-        session=HibernateUtility.getSESSION_FACTORY().openSession();
-        TypedQuery<Book> typedQuery=session.createNamedQuery("findByBookType", Book.class);
-        typedQuery.setParameter("myType",type);
-        return typedQuery.getResultList();
+
+    public List<Book> findbyTitleWithCriteria(String title){
+        EntityManager entityManager=HibernateUtility.getSESSION_FACTORY().createEntityManager();
+        CriteriaBuilder criteriaBuilder=entityManager.getCriteriaBuilder();
+        CriteriaQuery<Book> criteriaQuery=criteriaBuilder.createQuery(Book.class);
+        Root<Book> root=criteriaQuery.from(Book.class);
+        criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("title"),title));
+        List<Book> list= entityManager.createQuery(criteriaQuery).getResultList();
+      //  System.out.println(list);
+        entityManager.close();
+        return list;
     }
-    public List<Book> getBooksWithAuthorNameStartWith(String value){
-        String hql="select b from Book as b  where b.author.firstName like '"+value+"%'";
-        session=HibernateUtility.getSESSION_FACTORY().openSession();
-        TypedQuery<Book> typedQuery=session.createQuery(hql, Book.class);
-        return typedQuery.getResultList();
+    public List<Object[]> findbyTitleWithCriteria2(String title){
+        EntityManager entityManager=HibernateUtility.getSESSION_FACTORY().createEntityManager();
+        CriteriaBuilder criteriaBuilder=entityManager.getCriteriaBuilder();
+        CriteriaQuery<Object[]> criteriaQuery=criteriaBuilder.createQuery(Object[].class);
+        Root<Book> root=criteriaQuery.from(Book.class);
+        criteriaQuery.multiselect(root.get("title"),root.get("author").get("firstName")).where(criteriaBuilder.equal(root.get("title"),title));
+        List<Object[]> list= entityManager.createQuery(criteriaQuery).getResultList();
+        //  System.out.println(list);
+        entityManager.close();
+        return list;
     }
+
 }

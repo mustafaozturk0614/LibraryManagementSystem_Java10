@@ -21,5 +21,6 @@ public class UserInformation {
     private String phoneNumber;
     private String about;
     @ManyToMany(cascade = CascadeType.ALL)
+    @ToString.Exclude
     private Set<Address> address;
 }
